@@ -2,19 +2,13 @@ package main
 
 import (
 	"fmt"
-	
-	"github.com/gin-gonic/gin"
 
+	"github.com/senarais/golangquotesapi/internal/route"
 )
 
 func main()  {
-	r:= gin.Default()
-
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message" : "This API is active.",
-		})
-	})
+	quotesRoute := route.QuotesRoute{}
+	routes := quotesRoute.SetupRoutes()
 
 	fmt.Printf(`Server running on port 5000
 	    (  )   (   )  )
@@ -30,7 +24,6 @@ func main()  {
 \_____________________/
 
 	`)
-	
-	r.Run("localhost:5000")
 
+	routes.Run("localhost:5000")
 }
