@@ -31,5 +31,5 @@ func main()  {
 
 	`)
 
-	routes.Run("localhost:5000")
+	router.Run("localhost:5000")
 }
