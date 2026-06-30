@@ -10,10 +10,10 @@ import (
 type QuotesRoute struct{}
 
 func(q *QuotesRoute) SetupRoutes(router *gin.Engine) {
+	router.LoadHTMLGlob("views/*")
 
 	router.GET("/", func(c *gin.Context) {
-
-		c.JSON(http.StatusOK, gin.H{"message": "API is active, try /quote endpoint."})
+		c.Redirect(http.StatusFound, "/login")
 	})
 
 	router.GET("/quote", func(c *gin.Context) {

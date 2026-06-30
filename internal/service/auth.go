@@ -21,25 +21,32 @@ type LoginService struct {
 	UserDatabase *database.UserData
 }
 
-func(r *RegisterService) Register(request *http.Request) error {
+func(r *RegisterService) Register(request *http.Request) (string, error) {
 	userData := r.UserDatabase.GetData()
 	user := model.User{}
 
 	err:= json.NewDecoder(request.Body).Decode(&user)
 	if err != nil {
-		return fmt.Errorf("failed to decode %w", err)
+		return "", fmt.Errorf("failed to decode %w", err)
 	}
 	fmt.Println(user)
 
 	// Masukin user ke database.
 	for _, u := range userData {
 		if u.Username == user.Username {
-			return errors.New("Username already existed")
+			return "", errors.New("Username already existed")
 		}
 	}
 	r.UserDatabase.AddUser(user)
 
-	return nil
+	// Login User
+	login := LoginService{}
+	token, err :=  login.Login(request)
+	if err != nil {
+		return "",errors.New("Login gagal.")
+	}
+
+	return token, nil
 }
 
 func(l *LoginService) Login(request *http.Request) (string, error) {
