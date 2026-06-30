@@ -3,12 +3,18 @@ package main
 import (
 	"fmt"
 
+	"github.com/gin-gonic/gin"
 	"github.com/senarais/golangquotesapi/internal/route"
 )
 
 func main()  {
+	router := gin.Default()
+
+	// Import Routes
 	quotesRoute := route.QuotesRoute{}
-	routes := quotesRoute.SetupRoutes()
+
+	// Setup Routes
+	quotesRoute.SetupRoutes(router)
 
 	fmt.Printf(`Server running on port 5000
 	    (  )   (   )  )

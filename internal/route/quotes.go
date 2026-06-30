@@ -9,8 +9,7 @@ import (
 
 type QuotesRoute struct{}
 
-func(q *QuotesRoute) SetupRoutes() *gin.Engine {
-	router := gin.Default()
+func(q *QuotesRoute) SetupRoutes(router *gin.Engine) {
 
 	router.GET("/", func(c *gin.Context) {
 
@@ -23,6 +22,4 @@ func(q *QuotesRoute) SetupRoutes() *gin.Engine {
 
 		c.JSON(http.StatusOK, quote)
 	})
-
-	return router
 }
