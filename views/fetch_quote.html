@@ -64,11 +64,15 @@
     async function fetchQuote() {
       const quoteEl = document.getElementById('quote');
       const authorEl = document.getElementById('author');
+
       quoteEl.textContent = 'Loading...';
       quoteEl.className = 'quote loading';
       authorEl.textContent = '';
 
-      const res = await fetch('/quote');
+      const res = await fetch('/quote', {
+        method: 'POST'
+      });
+
       const data = await res.json();
 
       quoteEl.textContent = `"${data.Quote}"`;

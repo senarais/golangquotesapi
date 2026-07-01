@@ -1,10 +1,7 @@
 package service
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"net/http"
 	"time"
 
 	// "github.com/golang-jwt/jwt/v5"
@@ -21,15 +18,8 @@ type LoginService struct {
 	UserDatabase *database.UserData
 }
 
-func(r *RegisterService) Register(request *http.Request) (string, error) {
+func(r *RegisterService) Register(user model.User) (string, error) {
 	userData := r.UserDatabase.GetData()
-	user := model.User{}
-
-	err:= json.NewDecoder(request.Body).Decode(&user)
-	if err != nil {
-		return "", fmt.Errorf("failed to decode %w", err)
-	}
-	fmt.Println(user)
 
 	// Masukin user ke database.
 	for _, u := range userData {
@@ -41,7 +31,7 @@ func(r *RegisterService) Register(request *http.Request) (string, error) {
 
 	// Login User
 	login := LoginService{}
-	token, err :=  login.Login(request)
+	token, err :=  login.Login(user)
 	if err != nil {
 		return "",errors.New("Login gagal.")
 	}
@@ -49,14 +39,8 @@ func(r *RegisterService) Register(request *http.Request) (string, error) {
 	return token, nil
 }
 
-func(l *LoginService) Login(request *http.Request) (string, error) {
+func(l *LoginService) Login(user model.User) (string, error) {
 	userData := l.UserDatabase.GetData()
-	user := model.User{}
-
-	err := json.NewDecoder(request.Body).Decode(&user)
-	if err != nil {
-		return "",fmt.Errorf("failed to decode %w", err)
-	}
 
 	for _, u := range userData {
 		if u.Username == user.Username && u.Password == user.Password {
@@ -72,15 +56,16 @@ func(l *LoginService) Login(request *http.Request) (string, error) {
 }
 
 func(l *LoginService) createJwtToken(user model.User) (string, error) {
-
-	exp := time.Now().Add(24 * time.Hour).Unix()
-
+	claims := model.Claims{
+		Username: user.Username,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+		},
+	}
+	
 	key := []byte("jwtsecret")
 	token:= jwt.NewWithClaims(jwt.SigningMethodHS256, 
-	jwt.MapClaims{ 
-		"username": user.Username,
-		"exp": exp,
-	})
+	claims)
 
 	tokenString, err := token.SignedString(key)
 	    if err != nil {

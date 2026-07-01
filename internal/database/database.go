@@ -4,11 +4,15 @@ import (
 	"github.com/senarais/golangquotesapi/internal/model"
 )
 
-type UserData struct{
-	Users []model.User
-}
+type UserData struct{}
 
 type QuotesData struct {}
+
+// var database UserData = UserData{
+// 	Users: []model.User{},
+// }
+
+var database []model.User = []model.User{}
 
 func(q *QuotesData) GetData() []model.Quotes {
 	data := []model.Quotes{
@@ -38,9 +42,9 @@ func(q *QuotesData) GetData() []model.Quotes {
 }
 
 func(u *UserData) GetData() []model.User {
-	return u.Users
+	return database
 }
 
 func(u *UserData) AddUser(user model.User) {
-	u.Users = append(u.Users, user)
+	database = append(database, user)
 }

@@ -11,9 +11,11 @@ func main()  {
 	router := gin.Default()
 
 	// Import Routes
+	authRoutes := route.AuthRoutes{}
 	quotesRoute := route.QuotesRoute{}
 
 	// Setup Routes
+	authRoutes.SetupRoutes(router)
 	quotesRoute.SetupRoutes(router)
 
 	fmt.Printf(`Server running on port 5000
